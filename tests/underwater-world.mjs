@@ -1,0 +1,21 @@
+import assert from 'node:assert/strict';
+import * as THREE from 'three';
+import RAPIER from '../dist/vendor/rapier.js';
+import {buildUnderwaterWorld,UNDERWATER_LOCATIONS,UNDERWATER_ZONES} from '../dist/underwater-world.js';
+
+await RAPIER.init();
+const physics=new RAPIER.World({x:0,y:0,z:0}),scene=new THREE.Scene(),barriers=[];
+const underwater=buildUnderwaterWorld({scene,world:physics,RAPIER,barriers});
+assert.equal(UNDERWATER_LOCATIONS.length,6);
+assert.equal(UNDERWATER_ZONES.length,6);
+assert.equal(underwater.rings.length,6);
+assert.equal(underwater.schools.length,6);
+assert.equal(underwater.jellies.length,10);
+assert.equal(underwater.creatures.length,4);
+assert.ok(physics.colliders.len()>120,'large reefs, ruins, boundaries and large creatures are solid');
+const before=underwater.creatures[0].body.translation();
+underwater.animate(1/60,2);physics.step();
+const after=underwater.creatures[0].body.translation();
+assert.notEqual(after.x,before.x,'large sea creatures move with kinematic colliders');
+console.log('PASS: expanded six-zone underwater world, rich sea life, solid landmarks and moving creature colliders.');
+physics.free();

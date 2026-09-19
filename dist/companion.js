@@ -3,8 +3,8 @@ import RAPIER from './vendor/rapier.js';
 import {movementFacing} from './facing.js';
 // Follow the player's recorded route so corners do not become a straight-line shortcut.
 export class Companion {
- constructor(world,model){this.world=world;this.model=model;this.body=world.createRigidBody(RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(1.8,3,13));this.collider=world.createCollider(RAPIER.ColliderDesc.capsule(.3,.25),this.body);this.controller=world.createCharacterController(.035);this.trail=[];this.last=new THREE.Vector3(0,3,12);this.reset()}
- reset(){this.body.setTranslation({x:1.8,y:3,z:13},true);this.body.setNextKinematicTranslation({x:1.8,y:3,z:13});this.trail=[];this.last.set(0,3,12);this.model.rotation.set(0,0,0)}
+ constructor(world,model,start={x:1.8,y:3,z:13}){this.world=world;this.model=model;this.start={...start};this.body=world.createRigidBody(RAPIER.RigidBodyDesc.kinematicPositionBased().setTranslation(start.x,start.y,start.z));this.collider=world.createCollider(RAPIER.ColliderDesc.capsule(.3,.25),this.body);this.controller=world.createCharacterController(.035);this.trail=[];this.last=new THREE.Vector3(start.x-1.8,start.y,start.z-1);this.reset()}
+ reset(){const s=this.start;this.body.setTranslation(s,true);this.body.setNextKinematicTranslation(s);this.trail=[];this.last.set(s.x-1.8,s.y,s.z-1);this.model.rotation.set(0,0,0)}
  step(player,dt){const goal=new THREE.Vector3(player.x,player.y,player.z);if(goal.distanceTo(this.last)>.65){this.trail.push(goal.clone());this.last.copy(goal);if(this.trail.length>180)this.trail.shift()}
  const p=this.body.translation();let target=this.trail[0];if(!target)return;
  if(Math.hypot(p.x-target.x,p.y-target.y,p.z-target.z)<.5){this.trail.shift();target=this.trail[0];if(!target)return}

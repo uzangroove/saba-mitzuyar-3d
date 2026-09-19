@@ -1,0 +1,21 @@
+import assert from 'node:assert/strict';
+import * as THREE from 'three';
+import RAPIER from '../dist/vendor/rapier.js';
+import {buildImaginationWorld,IDEA_SPARKS,IMAGINATION_EXIT} from '../dist/imagination-world.js';
+
+await RAPIER.init();
+const physics=new RAPIER.World({x:0,y:-20,z:0}),scene=new THREE.Scene(),barriers=[];
+const imagination=buildImaginationWorld({scene,world:physics,RAPIER,barriers});
+assert.equal(IDEA_SPARKS.length,3);
+assert.deepEqual(IMAGINATION_EXIT,[0,1,-62]);
+assert.equal(imagination.sparks.length,3);
+assert.equal(imagination.bridge.visible,false);
+assert.ok(physics.colliders.len()>70,'toy blocks, pencils, creatures, floor and boundaries are solid');
+const before=physics.colliders.len();
+assert.equal(imagination.createBridge(),true);
+assert.equal(physics.colliders.len(),before+1);
+assert.equal(imagination.createBridge(),false,'bridge cannot charge or spawn twice');
+imagination.animate(1/60,1);assert.equal(imagination.bridge.visible,true);
+imagination.reset();assert.equal(imagination.bridge.visible,false);assert.equal(physics.colliders.len(),before);
+console.log('PASS: imagination stage has three ideas, a single painted solid bridge, living art and a rainbow exit.');
+physics.free();
