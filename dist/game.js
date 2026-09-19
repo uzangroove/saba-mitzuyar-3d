@@ -1,4 +1,4 @@
-import {buildEarthWorld,MONSTER_SPAWNS,CHECKPOINTS} from './earth-world.js?v=12';
+import {buildEarthWorld,MONSTER_SPAWNS,CHECKPOINTS} from './earth-world.js?v=14';
 import {movementFacing,headingMotion,firstPersonMotion} from './facing.js';
 import * as THREE from 'three';
 import {GLTFLoader} from './vendor/GLTFLoader.js';
