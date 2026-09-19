@@ -10,3 +10,4 @@
 #actions .action-icon{display:block;width:60px;height:60px;background-image:url('./assets/action-icons.png');background-size:200% 200%;background-repeat:no-repeat;pointer-events:none}
 #brush .action-icon{background-position:0 0}#shoot .action-icon{background-position:100% 0}#bridge .action-icon{background-position:0 100%}#jump .action-icon{background-position:100% 100%}
 @media(max-width:550px){#stick{left:auto;right:15px}#actions{left:12px;right:auto;grid-template-columns:58px 58px}#actions button{height:58px}#actions .action-icon{width:54px;height:54px}#run{left:auto;right:36px}}
+.back{color:#fff5dc;background:#183e36e8;text-decoration:none;border-radius:12px;padding:10px 12px;font-size:13px;min-height:44px;display:inline-flex;align-items:center}
