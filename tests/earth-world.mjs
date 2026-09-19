@@ -1,0 +1,9 @@
+import assert from 'node:assert/strict';
+import * as THREE from 'three';
+import RAPIER from '../dist/vendor/rapier.js';
+import {buildEarthWorld,MONSTER_SPAWNS,CHECKPOINTS} from '../dist/earth-world.js';
+await RAPIER.init();
+assert.equal(MONSTER_SPAWNS.length,4);assert.deepEqual(MONSTER_SPAWNS.map(x=>x.stage),[1,1,2,2]);assert.equal(CHECKPOINTS.length,3);
+const scene=new THREE.Scene(),world=new RAPIER.World({x:0,y:-20,z:0});world.timestep=1/60;const earth=buildEarthWorld({scene,world,RAPIER});
+assert.equal(earth.bridge.visible,false);assert.equal(earth.gateOpen,false);const before=world.colliders.len();earth.paintBridge();assert.equal(earth.bridge.visible,true);assert.equal(world.colliders.len(),before+1);earth.paintBridge();assert.equal(world.colliders.len(),before+1,'bridge collider is idempotent');earth.openGate();assert.equal(earth.gateOpen,true);assert.ok(earth.gateBody.isValid()===false,'gate body removed');
+for(let i=0;i<120;i++)earth.animate(i/60,1/60);assert.ok(earth.gate.position.y>7.9,'gate lifts after opening');assert.ok(scene.children.length>15,'rich world groups and landmarks created');console.log('PASS: 3 checkpoints, 4 monsters in two combat stages, painted bridge, locked/open gate, scenery and gate animation.');world.free();
