@@ -1,1 +1,13 @@
-{"name":"saba-3d-lab","private":true,"type":"module"}
+{
+  "name": "saba-mitzuyar-3d",
+  "version": "0.15.0",
+  "private": true,
+  "description": "Saba Mitzuyar — a Hebrew 3D browser adventure prototype",
+  "type": "module",
+  "scripts": {
+    "test": "node tests/avatar-motion.mjs && node tests/earth-world.mjs && node tests/imagination-world.mjs && node tests/physics-policy.mjs && node tests/three-loader.mjs && node tests/underwater-world.mjs && node tests/worlds.mjs"
+  },
+  "devDependencies": {
+    "three": "0.170.0"
+  }
+}

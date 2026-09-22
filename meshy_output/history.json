@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "projects": [
+    {
+      "folder": "20260919_103009_saba-shimon-animation-pilot_01a0ba80",
+      "prompt": "saba-shimon-animation-pilot",
+      "task_type": "remesh",
+      "root_task_id": "01a0ba80-ad09-7477-9d13-1f8543f03a0d",
+      "created_at": "2026-09-19T16:30:09.667Z",
+      "updated_at": "2026-09-19T16:39:32.459Z",
+      "task_count": 1
+    }
+  ]
+}
