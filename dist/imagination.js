@@ -1,3 +1,4 @@
+import {loadGLTF,ANTIALIAS,SHADOWS,pixelRatio,startFpsMeter} from './perf.js?v=151';
 import * as THREE from 'three';
 import {GLTFLoader} from './vendor/GLTFLoader.js';
 import RAPIER from './vendor/rapier.js';
@@ -37,10 +38,10 @@ stick.onpointermove=moveStick;stick.onpointerup=stick.onpointercancel=stick.onlo
 const canvas=$('#scene');canvas.onpointerdown=e=>{if(state.paused)return;lookId=e.pointerId;lookX=e.clientX;lookY=e.clientY;canvas.setPointerCapture(e.pointerId)};canvas.onpointermove=e=>{if(e.pointerId!==lookId)return;const d=-(e.clientX-lookX)*.005;state.yaw+=d;if(state.fp){state.facing=state.yaw;if(state.fpBasis!=null)state.fpBasis+=d}state.pitch=THREE.MathUtils.clamp(state.pitch+(e.clientY-lookY)*.004,-.8,.85);lookX=e.clientX;lookY=e.clientY};canvas.onpointerup=canvas.onpointercancel=()=>lookId=null;
 window.addEventListener('keydown',e=>{if(['Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();keys.add(e.code);if(e.code==='Space')state.jump=true;if(e.code==='KeyK'&&!e.repeat)magicAdvance();if(e.code==='KeyB'&&!e.repeat)paintBridge();if(e.code==='Escape')pause(!state.paused)});window.addEventListener('keyup',e=>keys.delete(e.code));window.addEventListener('blur',stop);document.addEventListener('visibilitychange',()=>{if(document.hidden&&state.ready)pause(true)});
 
-async function loadModel(url,height){const gltf=await new GLTFLoader().loadAsync(url),root=gltf.scene,b=new THREE.Box3().setFromObject(root),size=b.getSize(new THREE.Vector3()),center=b.getCenter(new THREE.Vector3()),scale=height/size.y;root.scale.setScalar(scale);root.position.set(-center.x*scale,-b.min.y*scale,-center.z*scale);root.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});const wrapper=new THREE.Group();wrapper.add(root);return wrapper}
+async function loadModel(url,height){const gltf=await loadGLTF(url),root=gltf.scene,b=new THREE.Box3().setFromObject(root),size=b.getSize(new THREE.Vector3()),center=b.getCenter(new THREE.Vector3()),scale=height/size.y;root.scale.setScalar(scale);root.position.set(-center.x*scale,-b.min.y*scale,-center.z*scale);root.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});const wrapper=new THREE.Group();wrapper.add(root);return wrapper}
 
 async function init(){
- await RAPIER.init();renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.15));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;scene=new THREE.Scene();camera=new THREE.PerspectiveCamera(62,1,.08,260);
+ await RAPIER.init();startFpsMeter();renderer=new THREE.WebGLRenderer({canvas,antialias:ANTIALIAS,powerPreference:'high-performance'});renderer.setPixelRatio(pixelRatio());renderer.shadowMap.enabled=SHADOWS;renderer.shadowMap.type=THREE.PCFSoftShadowMap;scene=new THREE.Scene();camera=new THREE.PerspectiveCamera(62,1,.08,260);
  scene.add(new THREE.HemisphereLight(0xfff5de,0x7d62a8,3));const sun=new THREE.DirectionalLight(0xffe8ba,3.4);sun.position.set(-18,28,16);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);Object.assign(sun.shadow.camera,{left:-38,right:38,top:38,bottom:-38,far:100});scene.add(sun);
  for(const [x,y,z,c] of [[-20,8,22,0xff76b7],[19,10,-28,0x62d9ff],[0,8,-60,0xb979ff]]){const l=new THREE.PointLight(c,6,34,2);l.position.set(x,y,z);scene.add(l)}
  world=new RAPIER.World({x:0,y:-20,z:0});world.timestep=fixed;imagination=buildImaginationWorld({scene,world,RAPIER,barriers});

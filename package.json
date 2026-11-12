@@ -1,6 +1,6 @@
 {
   "name": "saba-mitzuyar-3d",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "private": true,
   "description": "Saba Mitzuyar — a Hebrew 3D browser adventure prototype",
   "type": "module",
